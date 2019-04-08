@@ -1,2 +1,0 @@
-# Anderson
-Created with CodeSandbox
