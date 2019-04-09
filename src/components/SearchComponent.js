@@ -1,20 +1,66 @@
 import * as React from "react";
-
 import Display from "./Display";
 
 class FilterComponent extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       male: false,
       female: false,
-      boss: ""
+      boss: "",
+      users: []
     };
+    this.onChange = this.onChange.bind(this);
+    this.filterByAge = this.filterByAge.bind(this);
   }
-  ageFilter() {}
+  onChange(e) {
+    let target = e.target.id;
+    if (target === "every") {
+      return this.setState({
+        male: false,
+        female: false,
+        users: this.props.users
+      });
+    }
+    let arr = this.props.users;
+    let newArr =
+      e.target.id === "male"
+        ? arr.filter(function(person) {
+            return person.gender === "male";
+          })
+        : arr.filter(function(person) {
+            return person.gender === "female";
+          });
+    console.log(newArr);
+    this.setState({
+      male: false,
+      female: false,
+      [target]: true,
+      users: newArr
+    });
+  }
+  filterByAge(e) {
+    let from = 1523;
+    let to = 1544;
+    if (e.target.id === "from") {
+      from = e.target.value;
+    } else if (e.target.id === "to") {
+      to = e.target.value;
+    }
+    // console.log(`${from} ${to}`);
+    let arr = this.props.users;
+    let newArr = arr.filter(function(person) {
+      return person.id >= from && person.id <= to;
+    });
+    this.setState(state => ({
+      users: newArr
+    }));
+  }
   bossFilter() {}
   componentDidMount() {
-    this.props.fetchUsers("http://www.mocky.io/v2/5cab54d63000007e19904ac6");
+    this.props
+      .fetchUsers("http://www.mocky.io/v2/5cab54d63000007e19904ac6")
+      .then(() => this.setState({ users: this.props.users }));
   }
   render() {
     return (
@@ -35,10 +81,19 @@ class FilterComponent extends React.Component {
                 <input
                   className="form-check-input d-none"
                   type="checkbox"
-                  id="inlineCheckbox1"
-                  value="option1"
+                  name="male"
+                  checked={this.state.male}
+                  onChange={this.onChange}
+                  id="male"
                 />
-                <label className="form-check-label" htmlFor="inlineCheckbox1">
+                <label
+                  className={
+                    !this.state.male
+                      ? "form-check-label text-muted"
+                      : "form-check-label"
+                  }
+                  htmlFor="male"
+                >
                   male
                 </label>
                 <span className="pl-2">/</span>
@@ -47,10 +102,19 @@ class FilterComponent extends React.Component {
                 <input
                   className="form-check-input d-none"
                   type="checkbox"
-                  id="inlineCheckbox2"
-                  value="option2"
+                  id="female"
+                  name="female"
+                  checked={this.state.female}
+                  onChange={this.onChange}
                 />
-                <label className="form-check-label" htmlFor="inlineCheckbox2">
+                <label
+                  className={
+                    !this.state.female
+                      ? "form-check-label text-muted"
+                      : "form-check-label"
+                  }
+                  htmlFor="female"
+                >
                   female
                 </label>
                 <span className="pl-2">/</span>
@@ -59,33 +123,46 @@ class FilterComponent extends React.Component {
                 <input
                   className="form-check-input d-none"
                   type="checkbox"
-                  id="inlineCheckbox3"
-                  value="option3"
+                  id="every"
+                  name="every"
+                  checked={this.state.male || this.state.female ? false : true}
+                  onChange={this.onChange}
                 />
-                <label className="form-check-label" htmlFor="inlineCheckbox3">
+                <label
+                  className={
+                    this.state.male || this.state.female
+                      ? "form-check-label text-muted"
+                      : "form-check-label"
+                  }
+                  htmlFor="every"
+                >
                   not specifed
                 </label>
               </div>
             </div>
-            <div className="form-group col-sm-4">
+            <div className="form-group col-sm-5">
               <label htmlFor="from">age from</label>
               <input
                 type="number"
-                min="18"
-                max="99"
+                min="1524"
+                max="1544"
                 id="from"
-                className="mx-1 col-2 px-1"
+                className="mx-1 px-1"
+                style={{ width: "50px" }}
+                onChange={this.filterByAge}
               />
               <label htmlFor="to">to</label>
               <input
                 type="number"
-                min="18"
-                max="99"
+                min="1524"
+                max="1545"
                 id="to"
-                className="ml-1 col-2 px-1"
+                className="ml-1 px-1"
+                style={{ width: "50px" }}
+                onChange={this.filterByAge}
               />
             </div>
-            <div className="form-group d-flex align-self-baseline col-4">
+            <div className="form-group d-flex align-self-baseline col-sm-3">
               <label className="ml-sm-auto pt-2" htmlFor="from">
                 works for
               </label>
@@ -93,7 +170,7 @@ class FilterComponent extends React.Component {
             </div>
           </div>
         </form>
-        <Display />
+        <Display users={this.state.users} />
       </div>
     );
   }

@@ -11,11 +11,11 @@ export function fetchUsers() {
   return dispatch => {
     const request = async () => {
       const response = await fetch(
-        "https://jsonplaceholder.typicode.com/todos/1"
+        "https://gorest.co.in/public-api/users?_format=json&access-token=jJsV0jMYeVYoDGkhXbDQ_QgSuMztzCIKjto2"
       );
-      console.log(response);
       const json = await response.json();
       dispatch(receiveUsers(json));
+      console.log(json);
       return json;
     };
 

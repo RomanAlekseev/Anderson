@@ -4,7 +4,7 @@ import { fetchUsers } from "../actions/actions";
 
 function mapStateToProps(state) {
   return {
-    users: state.users
+    users: state.users.result
   };
 }
 
@@ -13,7 +13,9 @@ function mapDispatchToProps(dispatch) {
     fetchUsers: () => dispatch(fetchUsers())
   };
 }
-export default connect(
+const FilterContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(FilterComponent);
+
+export default FilterContainer;
