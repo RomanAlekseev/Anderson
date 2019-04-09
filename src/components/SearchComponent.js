@@ -12,6 +12,7 @@ class FilterComponent extends React.Component {
     };
     this.onChange = this.onChange.bind(this);
     this.filterByAge = this.filterByAge.bind(this);
+    this.filterByName = this.filterByName.bind(this);
   }
   onChange(e) {
     let target = e.target.id;
@@ -56,6 +57,20 @@ class FilterComponent extends React.Component {
       users: newArr
     }));
   }
+  filterByName(e) {
+    const value = e.target.value;
+    let arr = this.props.users;
+    //console.log(value);
+    let newUsers = [];
+    let pattern = new RegExp("\\b" + value, "gi");
+    this.props.users.map((item, i) => {
+      item.name.match(pattern) ? newUsers.push(arr[i]) : null;
+    });
+    this.setState(state => ({
+      users: newUsers
+    }));
+    console.log(newUsers);
+  }
   bossFilter() {}
   componentDidMount() {
     this.props
@@ -73,6 +88,7 @@ class FilterComponent extends React.Component {
               name="filterInput"
               type="text"
               placeholder="Search"
+              onChange={this.filterByName}
             />
           </div>
           <div className="form-row small d-flex justify-content-between text-left text-lg-center">
