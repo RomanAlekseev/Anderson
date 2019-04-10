@@ -33,12 +33,18 @@ class FilterComponent extends React.Component {
               person.id <= to
             );
           })
-        : arr.filter(function(person) {
+        : gender === "male"
+        ? arr.filter(function(person) {
             return (
               person.gender === "male" &&
               person.name.match(pattern) &&
               person.id >= from &&
               person.id <= to
+            );
+          })
+        : arr.filter(function(person) {
+            return (
+              person.name.match(pattern) && person.id >= from && person.id <= to
             );
           });
     this.setState({ users: newArr });
@@ -50,7 +56,7 @@ class FilterComponent extends React.Component {
         {
           gender: "all"
         },
-        () => this.filterStar
+        () => this.filterStart()
       );
     }
     // let arr = this.props.users;
