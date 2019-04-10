@@ -205,16 +205,18 @@ class FilterComponent extends React.Component {
                 className="mx-1 px-1"
                 style={{ width: "50px" }}
                 onChange={this.filterByAge}
+                defaultValue="1524"
               />
               <label htmlFor="to">to</label>
               <input
                 type="number"
-                min={1524}
+                min={this.state.ageFrom}
                 max="1545"
                 id="to"
                 className="ml-1 px-1"
                 style={{ width: "50px" }}
                 onChange={this.filterByAge}
+                defaultValue="1544"
               />
             </div>
             <div className="form-group d-flex align-self-baseline col-sm-3">
