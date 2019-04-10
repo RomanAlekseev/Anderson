@@ -5,71 +5,104 @@ class FilterComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      male: false,
-      female: false,
+      gender: "female",
+      name: "",
+      ageFrom: 1523,
+      ageTo: 1544,
       boss: "",
       users: []
     };
     this.onChange = this.onChange.bind(this);
     this.filterByAge = this.filterByAge.bind(this);
     this.filterByName = this.filterByName.bind(this);
+    this.filterStart = this.filterStart.bind(this);
   }
-  onChange(e) {
-    let target = e.target.id;
-    if (target === "every") {
-      return this.setState({
-        male: false,
-        female: false,
-        users: this.props.users
-      });
-    }
+  filterStart() {
     let arr = this.props.users;
+    let from = this.state.ageFrom;
+    let to = this.state.ageTo;
+    let gender = this.state.gender;
+    let pattern = new RegExp("\\b" + this.state.name, "gi");
     let newArr =
-      e.target.id === "male"
+      gender === "female"
         ? arr.filter(function(person) {
-            return person.gender === "male";
+            return (
+              person.gender === "female" &&
+              person.name.match(pattern) &&
+              person.id >= from &&
+              person.id <= to
+            );
           })
         : arr.filter(function(person) {
-            return person.gender === "female";
+            return (
+              person.gender === "male" &&
+              person.name.match(pattern) &&
+              person.id >= from &&
+              person.id <= to
+            );
           });
-    console.log(newArr);
-    this.setState({
-      male: false,
-      female: false,
-      [target]: true,
-      users: newArr
-    });
+    this.setState({ users: newArr });
   }
+  onChange = e => {
+    let target = e.target.id;
+    if (target === "all") {
+      return this.setState(
+        {
+          gender: "all"
+        },
+        () => this.filterStar
+      );
+    }
+    // let arr = this.props.users;
+    // let newArr =
+    //   e.target.id === "male"
+    //     ? arr.filter(function(person) {
+    //         return person.gender === "male";
+    //       })
+    //     : arr.filter(function(person) {
+    //         return person.gender === "female";
+    //       });
+    this.setState(
+      {
+        gender: target
+      },
+      () => this.filterStart()
+    );
+  };
   filterByAge(e) {
-    let from = 1523;
-    let to = 1544;
+    let from = this.state.ageFrom;
+    let to = this.state.ageTo;
     if (e.target.id === "from") {
       from = e.target.value;
     } else if (e.target.id === "to") {
-      to = e.target.value;
+      to =
+        this.state.ageFrom < e.target.value
+          ? e.target.value
+          : this.state.ageFrom;
     }
-    // console.log(`${from} ${to}`);
-    let arr = this.props.users;
-    let newArr = arr.filter(function(person) {
-      return person.id >= from && person.id <= to;
-    });
-    this.setState(state => ({
-      users: newArr
-    }));
+    this.setState(
+      {
+        ageFrom: from,
+        ageTo: to
+      },
+      () => this.filterStart()
+    );
   }
   filterByName(e) {
     const value = e.target.value;
-    let arr = this.props.users;
-    //console.log(value);
-    let newUsers = [];
-    let pattern = new RegExp("\\b" + value, "gi");
-    this.props.users.map((item, i) => {
-      item.name.match(pattern) ? newUsers.push(arr[i]) : null;
-    });
-    this.setState(state => ({
-      users: newUsers
-    }));
-    console.log(newUsers);
+    // let arr = this.props.users;
+    // //console.log(value);
+    // let newUsers = [];
+    // let pattern = new RegExp("\\b" + value, "gi");
+    // this.props.users.map((item, i) => {
+    //   item.name.match(pattern) ? newUsers.push(arr[i]) : null;
+    // });
+    this.setState(
+      {
+        name: value
+      },
+      () => this.filterStart()
+    );
   }
   bossFilter() {}
   componentDidMount() {
@@ -104,7 +137,7 @@ class FilterComponent extends React.Component {
                 />
                 <label
                   className={
-                    !this.state.male
+                    this.state.gender !== "male"
                       ? "form-check-label text-muted"
                       : "form-check-label"
                   }
@@ -125,7 +158,7 @@ class FilterComponent extends React.Component {
                 />
                 <label
                   className={
-                    !this.state.female
+                    this.state.gender !== "female"
                       ? "form-check-label text-muted"
                       : "form-check-label"
                   }
@@ -139,18 +172,18 @@ class FilterComponent extends React.Component {
                 <input
                   className="form-check-input d-none"
                   type="checkbox"
-                  id="every"
+                  id="all"
                   name="every"
                   checked={this.state.male || this.state.female ? false : true}
                   onChange={this.onChange}
                 />
                 <label
                   className={
-                    this.state.male || this.state.female
+                    this.state.gender !== "all"
                       ? "form-check-label text-muted"
                       : "form-check-label"
                   }
-                  htmlFor="every"
+                  htmlFor="all"
                 >
                   not specifed
                 </label>
@@ -170,7 +203,7 @@ class FilterComponent extends React.Component {
               <label htmlFor="to">to</label>
               <input
                 type="number"
-                min="1524"
+                min={this.state.ageFrom}
                 max="1545"
                 id="to"
                 className="ml-1 px-1"
