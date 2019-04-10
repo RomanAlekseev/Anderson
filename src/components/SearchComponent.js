@@ -209,7 +209,7 @@ class FilterComponent extends React.Component {
               <label htmlFor="to">to</label>
               <input
                 type="number"
-                min={this.state.ageFrom}
+                min={1524}
                 max="1545"
                 id="to"
                 className="ml-1 px-1"
