@@ -5,7 +5,7 @@ class FilterComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      gender: "female",
+      gender: "all",
       name: "",
       ageFrom: 1523,
       ageTo: 1544,
