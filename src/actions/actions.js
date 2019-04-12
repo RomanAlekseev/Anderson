@@ -11,7 +11,7 @@ export function fetchUsers() {
   return dispatch => {
     const request = async () => {
       const response = await fetch(
-        "https://gorest.co.in/public-api/users?_format=json&access-token=jJsV0jMYeVYoDGkhXbDQ_QgSuMztzCIKjto2"
+        "https://gorest.co.in/public-api/users?_format=json&access-token=Kct4AxW6n6XjUJ8w3Q1NrIF6rHw2dJCWk_Iy"
       );
       const json = await response.json();
       dispatch(receiveUsers(json));
